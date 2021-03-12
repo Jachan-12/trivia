@@ -3,26 +3,43 @@ import "../css/App.css";
 import data from "../sample_data.json";
 
 function App() {
-
   const [answerDisplayed, setAnswerDisplayed] = useState(false);
 
-  var questionNumber = 0;
+  function fun() {
+    setAnswerDisplayed(true);
+  }
+  const [questionNumber, setQuestionNumber] = useState(0);
+
+  function questionTracker() {
+    setQuestionNumber(questionNumber + 1); // 0
+    setAnswerDisplayed(false); // 0
+    // setQuestionNumber(0)
+  }
+
   return (
-    <div className = "app">
+    <div className="app">
       Trivia!
       <div>
         <Question
-        text={data[questionNumber]["question"]["text"]}
-        answerChoices={data[questionNumber]["question"]["choices"]}
+          text={data[questionNumber]["question"]["text"]}
+          answerChoices={data[questionNumber]["question"]["choices"]}
         />
-        </div>
-      <div>
-        <CorrectAnswer shouldDisplay={answerDisplayed} />
-        </div>
-        <div>
-        <NextQuestion />
-        </div>
       </div>
+      <div>
+        <button onClick={fun}>Click for the correct answer</button>
+        <CorrectAnswer
+          shouldDisplay={answerDisplayed}
+          answer={
+            data[questionNumber]["question"]["choices"][
+              data[questionNumber]["question"]["correct_choice_index"]
+            ]
+          }
+        />
+      </div>
+      <div>
+        <button onClick={questionTracker}>Next Question</button>
+      </div>
+    </div>
   );
 }
 
@@ -30,30 +47,19 @@ function Question(props) {
   return (
     <div>
       {props.text}
-      <Answer answerChoices = {props.answerChoices} />
-      </div>
+      <Answer answerChoices={props.answerChoices} />
+    </div>
   );
 }
 
 function CorrectAnswer(props) {
-  let answerText
-  if(props.shouldDisplay) {
-    answerText = "the answer";
+  let answerText;
+  if (props.shouldDisplay) {
+    answerText = props.answer;
   } else {
     answerText = "unanswered";
   }
-  }
-  return (
-    <div>
-      <button>Click for the correct answer</button>
-      <div>The correct answer is {answerText}</div>
-    </div>
-  );
-  )
-}
-
-function NextQuestion () {
-  return <button> Next Question </button>;
+  return <div>The correct answer is {answerText}</div>;
 }
 
 function Answer(props) {
@@ -64,8 +70,7 @@ function Answer(props) {
       <div>{props.answerChoices[2]}</div>
       <div>{props.answerChoices[3]}</div>
     </div>
-  )
+  );
 }
-
 
 export default App;
